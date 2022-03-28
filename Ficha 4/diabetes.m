@@ -37,6 +37,11 @@ net = feedforwardnet;
 % SIMULAR
 out = sim(net, p);
 
+i = (out < 0.5);
+out(i) = 0;
+i = (out >= 0.5);
+out(i) = 1;
+
 %VISUALIZAR DESEMPENHO
 
 %plotconfusion(t, out) % Matriz de confusao
