@@ -2,7 +2,16 @@ function [case_library] = retain(case_library, new_case, journey_index)
 
     journey = max(case_library{:, 1}) + 1;
     hotel = case_library{journey_index, 10};
-
+    if ~isfield(new_case, 'holiday_type')
+        new_case.holiday_type = case_library{journey_index, 2};
+    end
+    if ~isfield(new_case, 'price')
+        new_case.holiday_type = case_library{journey_index, 3};
+    end
+    if ~isfield(new_case, 'number_persons')
+        new_case.holiday_type = case_library{journey_index, 4};
+    end
+    % TODO faltam os restantes atributos
     new_row = {journey, new_case.holiday_type, new_case.price, new_case.number_persons, ...
                         new_case.region, new_case.transportation, new_case.duration, new_case.season, ...
                         new_case.accommodation, hotel};

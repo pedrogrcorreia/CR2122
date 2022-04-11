@@ -32,7 +32,11 @@ function [] = cbr()
     
     fprintf('\nStarting reuse phase...\n\n');
 
-    new_price = reuse(retrieved_cases, new_case);
+    if (isfield(new_case, 'price') && isfield(new_case, 'duration') && isfield(new_case, 'number_persons'))
+        new_price = reuse(retrieved_cases, new_case);
+    else
+        new_case.price = -1;
+    end
     
     fprintf('\n\nReuse phase completed...\n');
     

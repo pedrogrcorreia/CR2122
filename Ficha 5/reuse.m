@@ -11,8 +11,20 @@ function [new_price] = reuse(retrieved_cases, new_case)
     
     b = X\y;
     
-    % new_price = ...
+%     new_price = b(1) + b(2) * new_case.number_persons + b(3) * new_case.duration;
         
+%   calcular o novo preço usando uma rede neuronal
+
+    in = [x1'; x2';];
+    t = y';
+    net = feedforwardnet;
+    net.divideFcn = '';
+
+    net = train(net, in, t);
+
+    in_2 = [new_case.number_persons; new_case.duration];
+    new_price = sim(net, in_2);
+
     fprintf(['Based on the attributes Number of Persons and Duration of the retrieved cases,\n', ...
                 'the estimated price for the new case is %.2f, instead of %.2f.'], new_price, new_case.price);
 

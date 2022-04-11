@@ -17,6 +17,20 @@ function [retrieved_indexes, similarities, new_case] = retrieve(case_library, ne
     retrieved_indexes = [];
     similarities = [];
     
+    %remover dos pesos os fatores que nao sao dados
+
+    to_remove = [];
+    if ~isfield(new_case, 'holiday_type')
+        to_remove = [to_remove 1];
+    end
+    % ... faltam os outros
+    if ~isfield(new_case, 'region')
+        to_remove = [to_remove 4];
+    end
+    % ... faltam os outros
+
+    weighting_factors(to_remove) = [];
+
     for i=1:size(case_library,1)
         
         distances = zeros(1,8);
@@ -49,7 +63,9 @@ function [retrieved_indexes, similarities, new_case] = retrieve(case_library, ne
         
         distances(1,8) = calculate_local_distance(accommodation_sim, ...
                                 case_library{i,'Accommodation'}, new_case.accommodation);
-                            
+                          
+        % remover as distancias a 0
+        distances(to_remove) = [];
         final_similarity = 1 - ((distances * weighting_factors') / sum(weighting_factors));
         
         if final_similarity >= threshold
