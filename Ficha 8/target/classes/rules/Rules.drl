@@ -1,0 +1,58 @@
+package pt.pedrocorreia;
+
+import pt.pedrocorreia.*;
+
+rule "Se há fogo numa divisao, ligar aspersor de água"
+    salience 50
+    when
+        $d : Divisao()
+        $f : Fogo(divisao == $d)
+        $asp : Aspersor(divisao == $d, ligado == false)
+    then
+        $asp.setLigado(true);
+        update($asp);
+        System.out.println("Aspersor ligado na divisao " + $d.getNome());
+        retract($f);
+        System.out.println("Fogo foi extinto na divisão " + $d.getNome());
+end
+
+rule "Fogo apagado numa divisao, desligar aspersor"
+    salience 40
+    when
+        $d : Divisao()
+        $asp : Aspersor(divisao == $d, ligado == true)
+        not Fogo($d == divisao)
+    then
+        $asp.setLigado(false);
+        update($asp);
+        System.out.println("Aspersor desligado na divisão " + $d.getNome());
+end
+
+rule "Liga alarme se há fogos"
+    salience 100
+    when
+        exists Fogo()
+    then
+        insertLogical(new Alarme());
+        System.out.println("Alarme ligado");
+
+end
+
+rule "Desliga alarme se não há fogos"
+    salience 10
+    when
+        not Fogo()
+        $a : Alarme();
+    then
+        retract($a);
+        System.out.println("Alarme desligado");
+end
+
+rule "Tudo OK"
+    salience 1
+    when
+        not Alarme();
+        $asp : Aspersor(ligado == false)
+    then
+        System.out.println("Tudo ok");
+end
